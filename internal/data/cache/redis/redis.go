@@ -7,8 +7,7 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func New() (redis.UniversalClient, func(), error) {
-	var opts []Option
+func New(opts []Option) (redis.UniversalClient, func(), error) {
 	op := redisOptions{
 		Addrs:    []string{"localhost:6379"},
 		Password: "",

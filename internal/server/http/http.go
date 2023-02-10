@@ -2,19 +2,20 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 )
 
-func New() (*http.ServeMux, func()) {
+func New(o *Option) (*http.ServeMux, func()) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api", func(writer http.ResponseWriter, request *http.Request) {
 		_, _ = writer.Write([]byte("hello world"))
 	})
 	server := &http.Server{
 		Handler: mux,
-		Addr:    ":8088",
+		Addr:    fmt.Sprintf(":%d", o.Port),
 	}
 	go func() {
 		log.Println("server is starting...")

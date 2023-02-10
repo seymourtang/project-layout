@@ -1,9 +1,10 @@
 package main
 
 import (
-	"log"
 	"os"
 	"os/signal"
+
+	_ "go.uber.org/automaxprocs"
 
 	"github.com/seymourtang/project-layout/internal/injector"
 )
@@ -13,9 +14,9 @@ func main() {
 	signal.Notify(c, os.Interrupt)
 	init, cleanup, err := injector.Build()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+	defer cleanup()
 	init.Run()
 	<-c
-	cleanup()
 }

@@ -1,22 +1,32 @@
 package injector
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/redis/go-redis/v9"
+
+	"github.com/seymourtang/project-layout/internal/repository"
 )
 
 type Injector struct {
-	httpServer  *http.ServeMux
-	redisClient redis.UniversalClient
+	studentRepository repository.Student
+	redisClient       redis.UniversalClient
+	httpServer        *http.ServeMux
 }
 
-func NewInjector(httpServer *http.ServeMux, redisClient redis.UniversalClient) *Injector {
+func NewInjector(
+	studentRepository repository.Student,
+	redisClient redis.UniversalClient,
+	httpServer *http.ServeMux,
+) *Injector {
 	return &Injector{
-		httpServer:  httpServer,
-		redisClient: redisClient,
+		studentRepository: studentRepository,
+		redisClient:       redisClient,
+		httpServer:        httpServer,
 	}
 }
 
 func (i *Injector) Run() {
+	i.studentRepository.Get(context.Background(), "232")
 }

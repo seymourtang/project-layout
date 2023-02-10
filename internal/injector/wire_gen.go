@@ -7,20 +7,34 @@
 package injector
 
 import (
+	"github.com/seymourtang/project-layout/cmd/app/option"
 	"github.com/seymourtang/project-layout/internal/data/cache/redis"
+	"github.com/seymourtang/project-layout/internal/data/db"
+	"github.com/seymourtang/project-layout/internal/repository"
 	"github.com/seymourtang/project-layout/internal/server/http"
 )
 
 // Injectors from wire.go:
 
 func Build() (*Injector, func(), error) {
-	serveMux, cleanup := http.New()
-	universalClient, cleanup2, err := redis.New()
+	optionOption, err := option.New()
 	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
-	injector := NewInjector(serveMux, universalClient)
+	v := option.NewMySQLConfig(optionOption)
+	gormDB, err := db.New(v)
+	if err != nil {
+		return nil, nil, err
+	}
+	studentImpl := repository.NewStudentImpl(gormDB)
+	v2 := option.NewRedisConfig(optionOption)
+	universalClient, cleanup, err := redis.New(v2)
+	if err != nil {
+		return nil, nil, err
+	}
+	httpOption := option.NewHttpConfig(optionOption)
+	serveMux, cleanup2 := http.New(httpOption)
+	injector := NewInjector(studentImpl, universalClient, serveMux)
 	return injector, func() {
 		cleanup2()
 		cleanup()
