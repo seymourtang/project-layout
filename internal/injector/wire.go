@@ -10,17 +10,21 @@ import (
 	"github.com/seymourtang/project-layout/cmd/app/option"
 	"github.com/seymourtang/project-layout/internal/data/cache"
 	"github.com/seymourtang/project-layout/internal/data/db"
+	"github.com/seymourtang/project-layout/internal/mq"
 	"github.com/seymourtang/project-layout/internal/repository"
 	"github.com/seymourtang/project-layout/internal/server"
+	"github.com/seymourtang/project-layout/internal/task"
 )
 
-func Build() (*Injector, func(), error) {
+func Build() (*injector, func(), error) {
 	panic(wire.Build(
-		repository.ProvideSet,
-		db.ProvideSet,
-		option.ProvideSet,
+		repository.ProviderSet,
+		db.ProviderSet,
+		option.ProviderSet,
 		server.ProviderSet,
-		cache.ProvideSet,
+		cache.ProviderSet,
+		task.ProviderSet,
+		mq.ProviderSet,
 		NewInjector,
 	))
 }

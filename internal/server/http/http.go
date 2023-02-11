@@ -3,29 +3,56 @@ package http
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
+
+	"github.com/google/wire"
+	"github.com/julienschmidt/httprouter"
 )
 
-func New(o *Option) (*http.ServeMux, func()) {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api", func(writer http.ResponseWriter, request *http.Request) {
-		_, _ = writer.Write([]byte("hello world"))
-	})
+var ProviderSet = wire.NewSet(
+	New,
+	NewRouter,
+	wire.Bind(new(http.Handler), new(*httprouter.Router)),
+)
+
+type Server struct {
+	httpServer   *http.Server
+	Port         uint
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
+}
+
+func (s *Server) Name() string {
+	return "http.Server"
+}
+
+func (s *Server) Start(ctx context.Context) error {
+	if err := s.httpServer.ListenAndServe(); err != http.ErrServerClosed {
+		return err
+	}
+	return nil
+}
+
+func (s *Server) Stop(ctx context.Context) error {
+	if err := s.httpServer.Shutdown(ctx); err != http.ErrServerClosed {
+		return err
+	}
+	return nil
+}
+
+func New(o *Option, handler http.Handler) *Server {
+	addr := fmt.Sprintf(":%d", o.Port)
 	server := &http.Server{
-		Handler: mux,
-		Addr:    fmt.Sprintf(":%d", o.Port),
+		Handler:      handler,
+		Addr:         addr,
+		ReadTimeout:  o.ReadTimeout,
+		WriteTimeout: o.WriteTimeout,
 	}
-	go func() {
-		log.Println("server is starting...")
-		server.ListenAndServe()
-	}()
-	cleanup := func() {
-		ctx, cancelFunc := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancelFunc()
-		server.Shutdown(ctx)
-		log.Println("server is closed")
+	return &Server{
+		httpServer:   server,
+		Port:         o.Port,
+		ReadTimeout:  o.ReadTimeout,
+		WriteTimeout: o.WriteTimeout,
 	}
-	return mux, cleanup
 }

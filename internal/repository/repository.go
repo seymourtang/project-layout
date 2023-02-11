@@ -6,7 +6,7 @@ import (
 	"github.com/google/wire"
 )
 
-var ProvideSet = wire.NewSet(
+var ProviderSet = wire.NewSet(
 	NewStudentImpl,
 	wire.Bind(new(Student), new(*studentImpl)),
 )

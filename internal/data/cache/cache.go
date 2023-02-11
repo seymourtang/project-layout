@@ -6,4 +6,4 @@ import (
 	"github.com/seymourtang/project-layout/internal/data/cache/redis"
 )
 
-var ProvideSet = wire.NewSet(redis.New)
+var ProviderSet = wire.NewSet(redis.New)

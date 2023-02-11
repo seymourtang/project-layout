@@ -7,7 +7,7 @@ import (
 	gormLogger "gorm.io/gorm/logger"
 )
 
-var ProvideSet = wire.NewSet(New)
+var ProviderSet = wire.NewSet(New)
 
 func New(opts []Option) (*gorm.DB, error) {
 	op := options{

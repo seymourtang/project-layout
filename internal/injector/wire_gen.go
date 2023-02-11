@@ -10,14 +10,16 @@ import (
 	"github.com/seymourtang/project-layout/cmd/app/option"
 	"github.com/seymourtang/project-layout/internal/data/cache/redis"
 	"github.com/seymourtang/project-layout/internal/data/db"
+	redis2 "github.com/seymourtang/project-layout/internal/mq/redis"
 	"github.com/seymourtang/project-layout/internal/repository"
 	"github.com/seymourtang/project-layout/internal/server/http"
+	"github.com/seymourtang/project-layout/internal/task"
 )
 
 // Injectors from wire.go:
 
-func Build() (*Injector, func(), error) {
-	optionOption, err := option.New()
+func Build() (*injector, func(), error) {
+	optionOption, err := option.NewCmd()
 	if err != nil {
 		return nil, nil, err
 	}
@@ -33,10 +35,12 @@ func Build() (*Injector, func(), error) {
 		return nil, nil, err
 	}
 	httpOption := option.NewHttpConfig(optionOption)
-	serveMux, cleanup2 := http.New(httpOption)
-	injector := NewInjector(studentImpl, universalClient, serveMux)
-	return injector, func() {
-		cleanup2()
+	router := http.NewRouter()
+	server := http.New(httpOption, router)
+	channelMQ := redis2.NewChannelMQ(universalClient)
+	v3 := task.NewGroup(server, channelMQ)
+	injectorInjector := NewInjector(studentImpl, universalClient, v3)
+	return injectorInjector, func() {
 		cleanup()
 	}, nil
 }

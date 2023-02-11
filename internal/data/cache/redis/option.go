@@ -1,5 +1,7 @@
 package redis
 
+import "strings"
+
 type redisOptions struct {
 	DB       int
 	Password string
@@ -38,8 +40,8 @@ func (a addrsOption) apply(o *redisOptions) {
 	o.Addrs = a
 }
 
-func WithEndpoint(addrs []string) Option {
-	return addrsOption(addrs)
+func WithAddrs(addrs string) Option {
+	return addrsOption(strings.Split(addrs, ","))
 }
 
 type poolSizeOption int
