@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/google/wire v0.5.0
 	github.com/jinzhu/configor v1.2.1
+	github.com/julienschmidt/httprouter v1.3.0
 	github.com/redis/go-redis/v9 v9.0.2
 	go.uber.org/automaxprocs v1.5.1
 	gorm.io/driver/mysql v1.4.6

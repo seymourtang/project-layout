@@ -22,6 +22,9 @@ github.com/jinzhu/inflection
 # github.com/jinzhu/now v1.1.5
 ## explicit; go 1.12
 github.com/jinzhu/now
+# github.com/julienschmidt/httprouter v1.3.0
+## explicit; go 1.7
+github.com/julienschmidt/httprouter
 # github.com/kr/text v0.2.0
 ## explicit
 # github.com/redis/go-redis/v9 v9.0.2
