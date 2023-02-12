@@ -55,7 +55,7 @@ func NewCmd() (*Option, error) {
 	flag.StringVar(&option.MySQL.Password, "db-password", "123456", "database password")
 	flag.StringVar(&option.MySQL.DBName, "db-name", "test_db", "database name")
 	flag.StringVar(&option.MySQL.Username, "db-user", "root", "database user")
-	flag.StringVar(&option.Redis.Addrs, "redis-addrs", "127.0.0.1:32769", "redis addrs")
+	flag.StringVar(&option.Redis.Addrs, "redis-addrs", "127.0.0.1:6379", "redis addrs")
 	flag.StringVar(&option.Redis.Password, "redis-password", "redispw", "redis password")
 	flag.IntVar(&option.Redis.PoolSize, "redis-poolSize", 55, "redis connection pool size")
 	flag.UintVar(&option.Http.Port, "http-port", 8099, "http server port")
