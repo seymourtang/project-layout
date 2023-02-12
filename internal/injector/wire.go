@@ -14,6 +14,7 @@ import (
 	"github.com/seymourtang/project-layout/internal/repository"
 	"github.com/seymourtang/project-layout/internal/server"
 	"github.com/seymourtang/project-layout/internal/task"
+	_ "github.com/seymourtang/project-layout/internal/version"
 )
 
 func Build() (*injector, func(), error) {

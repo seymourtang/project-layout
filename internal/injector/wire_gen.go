@@ -16,6 +16,10 @@ import (
 	"github.com/seymourtang/project-layout/internal/task"
 )
 
+import (
+	_ "github.com/seymourtang/project-layout/internal/version"
+)
+
 // Injectors from wire.go:
 
 func Build() (*injector, func(), error) {
