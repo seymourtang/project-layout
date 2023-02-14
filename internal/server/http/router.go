@@ -42,9 +42,14 @@ func NewRouter() *httprouter.Router {
 			fmt.Fprintf(writer, "unable to upgrade websocket,err:%s", err.Error())
 			return
 		}
+		clientCountry := request.Header.Get("Cf-Ipcountry")
+		clientIP := request.Header.Get("Cf-Connecting-Ip")
+		log.Printf("new connection,IP:%s,Country:%s", clientIP, clientCountry)
 		go func() {
 			defer conn.Close()
-
+			defer func() {
+				log.Printf("connection closed,IP:%s,Country:%s", clientIP, clientCountry)
+			}()
 			for {
 				msg, op, err := wsutil.ReadClientData(conn)
 				if err != nil {

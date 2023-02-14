@@ -28,9 +28,11 @@ func (s *Server) Name() string {
 }
 
 func (s *Server) Start(ctx context.Context) error {
-	if err := s.httpServer.ListenAndServe(); err != http.ErrServerClosed {
-		return err
-	}
+	go func() {
+		if err := s.httpServer.ListenAndServe(); err != http.ErrServerClosed {
+			panic(err)
+		}
+	}()
 	return nil
 }
 

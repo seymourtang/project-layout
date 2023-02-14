@@ -34,13 +34,10 @@ func (i *injector) Run() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	for _, runner := range i.taskGroup {
-		runner := runner
-		go func() {
-			log.Printf("[%s] is started", runner.Name())
-			if err := runner.Start(context.Background()); err != nil {
-				panic(err)
-			}
-		}()
+		log.Printf("[%s] is started", runner.Name())
+		if err := runner.Start(context.Background()); err != nil {
+			panic(err)
+		}
 	}
 	<-c
 	for _, runner := range i.taskGroup {

@@ -25,17 +25,23 @@ func (c *ChannelMQ) Name() string {
 func (c *ChannelMQ) Start(ctx context.Context) error {
 	c.pubSub = c.client.Subscribe(ctx, c.channelName)
 	ch := c.pubSub.Channel()
-	for {
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		case data, ok := <-ch:
-			if !ok {
-				return nil
+	go func() {
+		defer func() {
+			log.Printf("channel %s exiting...", c.channelName)
+		}()
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case data, ok := <-ch:
+				if !ok {
+					return
+				}
+				log.Printf("received msg from channel %s:%s", c.channelName, data.Payload)
 			}
-			log.Printf("received msg from channel %s:%s", c.channelName, data.Payload)
 		}
-	}
+	}()
+	return nil
 }
 
 func (c *ChannelMQ) Stop(ctx context.Context) error {
